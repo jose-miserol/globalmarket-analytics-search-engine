@@ -1,0 +1,128 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "category",
+      "created_at",
+      "description",
+      "images",
+      "name",
+      "pricing",
+      "product_id",
+      "product_link",
+      "rating",
+      "specifications",
+      "updated_at"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "category": {
+        "bsonType": "object",
+        "properties": {
+          "main": {
+            "bsonType": "string"
+          },
+          "sub": {
+            "bsonType": "array",
+            "items": {
+              "bsonType": "string"
+            }
+          }
+        },
+        "required": [
+          "main",
+          "sub"
+        ]
+      },
+      "created_at": {
+        "bsonType": "string"
+      },
+      "description": {
+        "bsonType": "string"
+      },
+      "images": {
+        "bsonType": "object",
+        "properties": {
+          "main": {
+            "bsonType": "string"
+          },
+          "thumbnail": {
+            "bsonType": "string"
+          }
+        },
+        "required": [
+          "main",
+          "thumbnail"
+        ]
+      },
+      "name": {
+        "bsonType": "string"
+      },
+      "pricing": {
+        "bsonType": "object",
+        "properties": {
+          "actual_price": {
+            "bsonType": [
+              "int",
+              "double"
+            ]
+          },
+          "currency": {
+            "bsonType": "string"
+          },
+          "discount_percentage": {
+            "bsonType": "int"
+          },
+          "discounted_price": {
+            "bsonType": [
+              "int",
+              "double"
+            ]
+          }
+        },
+        "required": [
+          "actual_price",
+          "currency",
+          "discount_percentage",
+          "discounted_price"
+        ]
+      },
+      "product_id": {
+        "bsonType": "string"
+      },
+      "product_link": {
+        "bsonType": "string"
+      },
+      "rating": {
+        "bsonType": "object",
+        "properties": {
+          "average": {
+            "bsonType": [
+              "double",
+              "int"
+            ]
+          },
+          "count": {
+            "bsonType": "int"
+          }
+        },
+        "required": [
+          "average",
+          "count"
+        ]
+      },
+      "specifications": {
+        "bsonType": "array",
+        "items": {
+          "bsonType": "string"
+        }
+      },
+      "updated_at": {
+        "bsonType": "string"
+      }
+    }
+  }
+}

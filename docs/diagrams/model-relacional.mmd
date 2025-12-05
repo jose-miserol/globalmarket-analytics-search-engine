@@ -1,0 +1,39 @@
+erDiagram
+    PRODUCTS ||--o{ REVIEWS : "tiene"
+    USERS ||--o{ REVIEWS : "escribe"
+    CATEGORIES ||--o{ PRODUCTS : "contiene"
+    
+    PRODUCTS {
+        string product_id PK
+        string product_name
+        decimal discounted_price
+        decimal actual_price
+        float discount_percentage
+        float rating
+        int rating_count
+        text about_product
+        string img_link
+        string product_link
+        string category_id FK
+        datetime created_at
+    }
+    
+    USERS {
+        string user_id PK
+        string user_name
+        datetime created_at
+    }
+    
+    REVIEWS {
+        string review_id PK
+        string product_id FK
+        string user_id FK
+        string review_title
+        text review_content
+        datetime review_date
+    }
+    
+    CATEGORIES {
+        string category_id PK
+        string category_name
+    }

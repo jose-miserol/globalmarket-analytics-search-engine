@@ -1,0 +1,53 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "content",
+      "helpful_count",
+      "images",
+      "product_id",
+      "rating",
+      "review_date",
+      "review_id",
+      "title",
+      "user_id",
+      "verified_purchase"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "content": {
+        "bsonType": "string"
+      },
+      "helpful_count": {
+        "bsonType": "int"
+      },
+      "images": {
+        "bsonType": "array"
+      },
+      "product_id": {
+        "bsonType": "string"
+      },
+      "rating": {
+        "bsonType": "int"
+      },
+      "review_date": {
+        "bsonType": "string"
+      },
+      "review_id": {
+        "bsonType": "string"
+      },
+      "title": {
+        "bsonType": "string"
+      },
+      "user_id": {
+        "bsonType": "string"
+      },
+      "verified_purchase": {
+        "bsonType": "bool"
+      }
+    }
+  }
+}

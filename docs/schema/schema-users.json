@@ -1,0 +1,40 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "average_rating_given",
+      "email",
+      "name",
+      "registration_date",
+      "total_reviews",
+      "user_id"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "average_rating_given": {
+        "bsonType": [
+          "double",
+          "int"
+        ]
+      },
+      "email": {
+        "bsonType": "string"
+      },
+      "name": {
+        "bsonType": "string"
+      },
+      "registration_date": {
+        "bsonType": "string"
+      },
+      "total_reviews": {
+        "bsonType": "int"
+      },
+      "user_id": {
+        "bsonType": "string"
+      }
+    }
+  }
+}

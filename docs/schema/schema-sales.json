@@ -1,0 +1,68 @@
+{
+  "$jsonSchema": {
+    "bsonType": "object",
+    "required": [
+      "_id",
+      "payment_method",
+      "product_id",
+      "quantity",
+      "sale_date",
+      "sale_id",
+      "shipping",
+      "status",
+      "total_amount",
+      "user_id"
+    ],
+    "properties": {
+      "_id": {
+        "bsonType": "objectId"
+      },
+      "payment_method": {
+        "bsonType": "string"
+      },
+      "product_id": {
+        "bsonType": "string"
+      },
+      "quantity": {
+        "bsonType": "int"
+      },
+      "sale_date": {
+        "bsonType": "string"
+      },
+      "sale_id": {
+        "bsonType": "string"
+      },
+      "shipping": {
+        "bsonType": "object",
+        "properties": {
+          "city": {
+            "bsonType": "string"
+          },
+          "country": {
+            "bsonType": "string"
+          },
+          "postal_code": {
+            "bsonType": "string"
+          }
+        },
+        "required": [
+          "city",
+          "country",
+          "postal_code"
+        ]
+      },
+      "status": {
+        "bsonType": "string"
+      },
+      "total_amount": {
+        "bsonType": [
+          "int",
+          "double"
+        ]
+      },
+      "user_id": {
+        "bsonType": "string"
+      }
+    }
+  }
+}
