@@ -309,6 +309,14 @@ Demostración del impacto de los índices en el tiempo de respuesta:
 
 ---
 
+---
+
+## Charts Mongodb
+
+[https://charts.mongodb.com/charts-globalmarket-analytics-se-vttjgmj/public/dashboards/c0145842-7bb1-45c2-bc1c-2493fbf35571](Charts Mongodb)
+
+---
+
 ## Equipo de Desarrollo
 
 Este proyecto fue desarrollado para la asignatura **Sistemas de Bases de Datos II** (UNEG).
