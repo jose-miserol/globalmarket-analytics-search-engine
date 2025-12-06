@@ -111,7 +111,7 @@ El sistema ha sido optimizado para resolver los principales desafíos del comerc
 </td>
 </tr>
 <tr>
-<td>
+<td width="50%">
 
 ### 🚀 Performance
 
@@ -120,7 +120,7 @@ El sistema ha sido optimizado para resolver los principales desafíos del comerc
 - Índices únicos para integridad
 
 </td>
-<td>
+<td width="50%">
 
 ### 📊 Analytics
 
@@ -182,6 +182,8 @@ erDiagram
     }
 ```
 
+<br/>
+
 ### Modelo de Datos NoSQL (MongoDB/JSON Schema)
 
 <br/>
@@ -230,6 +232,11 @@ erDiagram
 
 <br/>
 
+> [!NOTE]
+> La colección “sales” actúa como el núcleo transaccional del ecosistema GlobalMarket Analytics. Aunque ha sido generada sintéticamente, su estructura está diseñada para representar fielmente el flujo de compra, vinculando las entidades de users y products para permitir un análisis profundo del comportamiento comercial.
+
+<br/>
+
 ### 🔄 Paso 2: Transformación de Datos (ETL)
 
 Prepara el dataset crudo (CSV) y conviértelo a documentos JSON estructurados.
@@ -244,14 +251,18 @@ python src/data/transform_data.py
 python src/data/transform_validate_data.py
 ```
 
-> [!TIP] > **Resultado:** Se validan los datos JSON en `data/processed/` listos para importar.
+> [!TIP] > **Resultado:** Se validan los datos JSON en `data/processed/`.
 
 <br/>
 
 > [!NOTE]
 > Los scripts de python para Transformación de Datos (ETL) ha sido incluido para ofrecer una flexibilidad en el proceso de ETL (Extract, Transform, Load). Sin embargo, si deseas omitir el paso de transformación en Python y cargar directamente los archivos JSON pre-procesados, puedes hacerlo. Estos archivos optimizados están ya disponibles en la ruta data/process, listos para ser utilizados con la herramienta nativa mongoimport en los siguientes pasos.
 
+<br/>
+
 ### 🛡️ Paso 3: Aplicar Validaciones (Schema Validation)
+
+<br/>
 
 ```javascript
 // Conectarse al cluster Atlas
@@ -278,7 +289,11 @@ mongoimport --uri "TU_STRING" --db globalmarket --collection sales --file data/p
 mongoimport --uri "TU_STRING" --db globalmarket --collection reviews --file data/processed/reviews.json --jsonArray --drop
 ```
 
+<br/>
+
 ### ⚡ Paso 5: Indexación Inteligente
+
+<br/>
 
 ```javascript
 // Desde mongosh conectado:
@@ -378,9 +393,13 @@ VIP Score = Gasto Total × (1 + Frecuencia de Compra / 10)
 
 </details>
 
+<br/>
+
 ---
 
 ## 📁 Estructura del Proyecto
+
+<br/>
 
 ```
 globalmarket-analytics/
@@ -401,6 +420,8 @@ globalmarket-analytics/
 ├── 📄 README.md                            # Documentación principal
 ├── 📄 master_setup.sh                      # Script de configuración
 ```
+
+<br/>
 
 ---
 
