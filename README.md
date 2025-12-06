@@ -41,10 +41,6 @@
   - [🏗️ Arquitectura de Datos](#️-arquitectura-de-datos)
     - [Modelo de Datos Relacional (Diagrama Entidad-Relación - ERD)](#modelo-de-datos-relacional-diagrama-entidad-relación---erd)
     - [Modelo de Datos NoSQL (MongoDB/JSON Schema)](#modelo-de-datos-nosql-mongodbjson-schema)
-    - [Estrategias de Diseño](#estrategias-de-diseño)
-  - [🛠️ Guía de Instalación](#️-guía-de-instalación)
-    - [Prerrequisitos](#prerrequisitos)
-    - [📦 Paso 1: Configuración del Entorno](#-paso-1-configuración-del-entorno)
     - [🔄 Paso 2: Transformación de Datos (ETL)](#-paso-2-transformación-de-datos-etl)
     - [🛡️ Paso 3: Aplicar Validaciones (Schema Validation)](#️-paso-3-aplicar-validaciones-schema-validation)
     - [📥 Paso 4: Ingesta de Datos](#-paso-4-ingesta-de-datos)
@@ -63,7 +59,7 @@
 **GlobalMarket** es una implementación completa de un sistema de comercio electrónico utilizando **MongoDB Atlas**. Este proyecto demuestra la transición de un modelo relacional tradicional a una arquitectura documental NoSQL, diseñada específicamente para manejar **Big Data en E-commerce**.
 
 <div align="center">
-
+<br/>
 |    🎯 Objetivo    | 📌 Descripción                                     |
 | :---------------: | :------------------------------------------------- |
 |   **Migración**   | Transición de modelo relacional a NoSQL documental |
@@ -136,6 +132,8 @@ El sistema ha sido optimizado para resolver los principales desafíos del comerc
 
 ### Modelo de Datos Relacional (Diagrama Entidad-Relación - ERD)
 
+<br/>
+
 ```mermaid
 erDiagram
     PRODUCTS ||--o{ REVIEWS : "tiene"
@@ -180,6 +178,8 @@ erDiagram
 
 ### Modelo de Datos NoSQL (MongoDB/JSON Schema)
 
+<br/>
+
 ```mermaid
 erDiagram
     PRODUCTS ||--o{ REVIEWS : "has (Referenced)"
@@ -222,42 +222,7 @@ erDiagram
     }
 ```
 
-### Estrategias de Diseño
-
-| 📦 Colección | 🔧 Estrategia             | 📝 Justificación Técnica                                                                  |
-| :----------- | :------------------------ | :---------------------------------------------------------------------------------------- |
-| `products`   | 🔄 **Hybrid (Embedding)** | Categorías, precios y ratings embebidos para lectura rápida `O(1)`. Evita JOINs costosos. |
-| `reviews`    | 🔗 **Referencing**        | Colección separada para evitar el límite de 16MB por documento (BSON Limit).              |
-| `users`      | 🔗 **Referencing**        | Entidad independiente. Facilita cumplimiento de normas de privacidad.                     |
-| `sales`      | 📸 **Ref + Snapshot**     | Referencia productos pero **duplica** datos históricos (precio al momento de venta).      |
-
----
-
-## 🛠️ Guía de Instalación
-
-### Prerrequisitos
-
-| Herramienta                                                                                    | Versión | Descripción                  |
-| :--------------------------------------------------------------------------------------------- | :------ | :--------------------------- |
-| ![Python](https://img.shields.io/badge/Python-3.8+-blue?logo=python&logoColor=white)           | 3.8+    | Scripts ETL                  |
-| ![MongoDB](https://img.shields.io/badge/mongosh-latest-green?logo=mongodb&logoColor=white)     | Latest  | MongoDB Shell                |
-| ![Tools](https://img.shields.io/badge/MongoDB_Tools-latest-green?logo=mongodb&logoColor=white) | Latest  | `mongoimport`, `mongoexport` |
-| ![Atlas](https://img.shields.io/badge/MongoDB_Atlas-M0-green?logo=mongodb&logoColor=white)     | M0 Free | Cluster gratuito             |
-
-### 📦 Paso 1: Configuración del Entorno
-
-```bash
-# 1. Clonar el repositorio
-git clone https://github.com/tu-usuario/globalmarket-analytics.git
-cd globalmarket-analytics
-
-# 2. Crear entorno virtual (Recomendado)
-python -m venv venv
-source venv/bin/activate  # En Windows: venv\Scripts\activate
-
-# 3. Instalar dependencias
-pip install pandas pymongo
-```
+<br/>
 
 ### 🔄 Paso 2: Transformación de Datos (ETL)
 
@@ -274,6 +239,11 @@ python src/data/transform_validate_data.py
 ```
 
 > [!TIP] > **Resultado:** Se validan los datos JSON en `data/processed/` listos para importar.
+
+<br/>
+
+> [!NOTE]
+> Los scripts de python para Transformación de Datos (ETL) ha sido incluido para ofrecer una flexibilidad en el proceso de ETL (Extract, Transform, Load). Sin embargo, si deseas omitir el paso de transformación en Python y cargar directamente los archivos JSON pre-procesados, puedes hacerlo. Estos archivos optimizados están ya disponibles en la ruta data/process, listos para ser utilizados con la herramienta nativa mongoimport en los siguientes pasos.
 
 ### 🛡️ Paso 3: Aplicar Validaciones (Schema Validation)
 
@@ -311,6 +281,8 @@ load("index.js");
 
 > [!NOTE]
 > Este script crea índices compuestos y configura Atlas Search para búsquedas de texto completo.
+
+<br/>
 
 ---
 
