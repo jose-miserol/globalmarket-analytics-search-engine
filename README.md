@@ -73,6 +73,8 @@
 
 ### ¿Por qué MongoDB para E-commerce?
 
+<br/>
+
 El sistema ha sido optimizado para resolver los principales desafíos del comercio electrónico moderno:
 
 - ⚡ **Alto rendimiento** en consultas de agregación complejas
@@ -84,6 +86,8 @@ El sistema ha sido optimizado para resolver los principales desafíos del comerc
 ---
 
 ## ✨ Características Principales
+
+<br/>
 
 <table>
 <tr>
