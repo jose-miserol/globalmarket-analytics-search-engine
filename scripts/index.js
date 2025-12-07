@@ -119,14 +119,16 @@ const productsIndexes = [
     spec: { product_id: 1 },
     options: { unique: true },
   },
-  {
-    name: "idx_category_main",
-    spec: { "category.main": 1 },
-    options: {},
-  },
+  // Índice compuesto para filtrar por categoría y ordenar por precio
   {
     name: "idx_category_price_desc",
     spec: { "category.main": 1, "pricing.actual_price": -1 },
+    options: {},
+  },
+  // Índice para filtrar productos por cantidad de reseñas (Pipeline 2)
+  {
+    name: "idx_rating_count",
+    spec: { "rating.count": -1 },
     options: {},
   },
 ];
@@ -139,16 +141,25 @@ productsIndexes.forEach((idx) => safeCreateIndex("products", idx));
 print("\n[3/4] Optimizando colección 'sales'...");
 
 const salesIndexes = [
+  // Índice para $lookup desde products
   {
     name: "idx_fk_product_id",
     spec: { product_id: 1 },
     options: {},
   },
+  // Índice para agregación por usuario (Pipeline 4: Clientes VIP)
+  {
+    name: "idx_user_id",
+    spec: { user_id: 1 },
+    options: {},
+  },
+  // Índice para ordenar por fecha de venta
   {
     name: "idx_sale_date",
     spec: { sale_date: -1 },
     options: {},
   },
+  // Índice compuesto para análisis por ciudad (Pipeline 5)
   {
     name: "idx_city_amount",
     spec: { "shipping.city": 1, total_amount: -1 },
@@ -163,12 +174,21 @@ salesIndexes.forEach((idx) => safeCreateIndex("sales", idx));
 // ============================================================================
 print("\n[4/4] Optimizando colecciones secundarias...");
 
+// Índice único para email (login/autenticación)
 safeCreateIndex("users", {
   name: "idx_email_unique",
   spec: { email: 1 },
   options: { unique: true },
 });
 
+// Índice único para user_id (FK desde sales y reviews)
+safeCreateIndex("users", {
+  name: "idx_user_id_unique",
+  spec: { user_id: 1 },
+  options: { unique: true },
+});
+
+// Índice compuesto para reviews (búsqueda por producto + ordenar por rating)
 safeCreateIndex("reviews", {
   name: "idx_reviews_product_rating",
   spec: { product_id: 1, rating: -1 },

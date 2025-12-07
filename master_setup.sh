@@ -32,9 +32,10 @@ if [[ -f "$ENV_FILE" ]]; then
 fi
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# �📋 CONFIGURATION
+# 📋 CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
-DB_NAME="globalmarketv2"
+# DB_NAME can be set in .env file, otherwise defaults to "globalmarket"
+DB_NAME="${DB_NAME:-globalmarket}"
 DATA_DIR="data/processed"
 SCRIPTS_DIR="scripts"
 
@@ -170,28 +171,60 @@ get_connection_string() {
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 🛡️ SCHEMA VALIDATION
+# 🛡️ DATABASE SETUP (VALIDATION + INDEXES)
 # ═══════════════════════════════════════════════════════════════════════════════
 
-apply_validation() {
-    print_header "🛡️ Applying Schema Validation"
+setup_database() {
+    print_header "🛡️ Database Setup (Validation + Indexes)"
     
-    if [[ ! -f "${SCRIPTS_DIR}/validation.js" ]]; then
-        print_warning "validation.js not found. Skipping..."
-        return
-    fi
+    local has_validation=false
+    local has_index=false
     
-    if ! command -v mongosh &> /dev/null; then
-        print_warning "mongosh not available. Skipping validation..."
-        return
-    fi
-    
-    print_step "Creating collections with JSON Schema validation..."
-    
-    if mongosh "$CONNECTION_STRING/$DB_NAME" --file "${SCRIPTS_DIR}/validation.js" --quiet; then
-        print_success "Schema validation applied successfully!"
+    # Check for script files
+    if [[ -f "${SCRIPTS_DIR}/validation.js" ]]; then
+        has_validation=true
+        print_info "Found validation.js"
     else
-        print_error "Failed to apply schema validation"
+        print_warning "validation.js not found. Skipping validation..."
+    fi
+    
+    if [[ -f "${SCRIPTS_DIR}/index.js" ]]; then
+        has_index=true
+        print_info "Found index.js"
+    else
+        print_warning "index.js not found. Skipping indexing..."
+    fi
+    
+    # Check if mongosh is available
+    if ! command -v mongosh &> /dev/null; then
+        print_warning "mongosh not available. Skipping database setup..."
+        return
+    fi
+    
+    # Build the load commands dynamically
+    local load_commands=""
+    
+    if [[ "$has_validation" == true ]]; then
+        load_commands+="load('${SCRIPTS_DIR}/validation.js');"
+    fi
+    
+    if [[ "$has_index" == true ]]; then
+        load_commands+="load('${SCRIPTS_DIR}/index.js');"
+    fi
+    
+    if [[ -z "$load_commands" ]]; then
+        print_warning "No scripts to execute."
+        return
+    fi
+    
+    print_step "Executing validation and indexing in a single session..."
+    echo ""
+    
+    if mongosh "$CONNECTION_STRING/$DB_NAME" --quiet --eval "$load_commands"; then
+        echo ""
+        print_success "Database setup completed successfully!"
+    else
+        print_error "Failed to setup database"
         exit 1
     fi
 }
@@ -235,33 +268,6 @@ import_data() {
     done
     echo ""
     print_success "All collections imported successfully!"
-}
-
-# ═══════════════════════════════════════════════════════════════════════════════
-# ⚡ INDEXING
-# ═══════════════════════════════════════════════════════════════════════════════
-
-create_indexes() {
-    print_header "⚡ Creating Indexes"
-    
-    if [[ ! -f "${SCRIPTS_DIR}/index.js" ]]; then
-        print_warning "index.js not found. Skipping..."
-        return
-    fi
-    
-    if ! command -v mongosh &> /dev/null; then
-        print_warning "mongosh not available. Skipping indexing..."
-        return
-    fi
-    
-    print_step "Creating compound indexes and Atlas Search configuration..."
-    
-    if mongosh "$CONNECTION_STRING/$DB_NAME" --file "${SCRIPTS_DIR}/index.js" --quiet; then
-        print_success "Indexes created successfully!"
-    else
-        print_error "Failed to create indexes"
-        exit 1
-    fi
 }
 
 # ═══════════════════════════════════════════════════════════════════════════════
@@ -360,27 +366,23 @@ main() {
     
     # Execute pipeline
     local start_time=$(date +%s)
-    
     check_prerequisites
-    
+
     if [[ -z "$CONNECTION_STRING" ]]; then
         get_connection_string
     fi
     
-    if [[ "$SKIP_VALIDATION" != true ]]; then
-        apply_validation
-    else
-        print_info "Skipping validation (--skip-validation)"
-    fi
-    
+    # 1. First import data (creates collections)
     import_data
     
-    if [[ "$SKIP_INDEXES" != true ]]; then
-        create_indexes
+    # 2. Then apply validation and indexes (after collections exist)
+    if [[ "$SKIP_VALIDATION" != true && "$SKIP_INDEXES" != true ]]; then
+        setup_database
     else
-        print_info "Skipping indexes (--skip-indexes)"
+        print_info "Skipping database setup (--skip-validation or --skip-indexes)"
     fi
     
+    # 3. Verify import
     if [[ "$SKIP_VERIFY" != true ]]; then
         verify_import
     else
