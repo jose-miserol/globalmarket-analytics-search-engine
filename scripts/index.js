@@ -1,31 +1,42 @@
 /**
  * ============================================================================
- * GLOBALMARKET - SCRIPT DE CREACIÓN DE ÍNDICES (VERSIÓN ROBUSTA)
+ * GLOBALMARKET ANALYTICS - SCRIPT DE CREACIÓN DE ÍNDICES
  * ============================================================================
- * Contexto: Solución al error "IndexOptionsConflict".
- * Mejora: Compara la definición de las llaves (keys) antes de crear.
+ * @description Script robusto para la creación de índices en MongoDB Atlas.
+ *              Maneja conflictos de nombres e índices duplicados de forma
+ *              inteligente, comparando las definiciones de llaves (keys).
+ * @context     Proyecto 1: Ingeniería de Datos NoSQL
+ * @author      Equipo GlobalMarket
  * ============================================================================
  */
 
-// 1. VALIDACIÓN DE BASE DE DATOS
-db = db.getSiblingDB("globalmarket");
-
-if (db.getName() !== "globalmarket") {
-  print(
-    "Error Crítico: No se pudo seleccionar la base de datos 'globalmarket'."
-  );
-  quit();
-}
+// ============================================================================
+// CONFIGURACIÓN DE BASE DE DATOS
+// ============================================================================
+/**
+ * Obtiene el nombre de la base de datos desde la variable de entorno DB_NAME.
+ * Si no está definida, usa 'globalmarket' como valor por defecto.
+ * 
+ * Uso desde terminal:
+ *   mongosh "$CONNECTION_STRING/$DB_NAME" --file "scripts/index.js"
+ */
+const DB_NAME = process.env.DB_NAME || db.getName() || "globalmarket";
+db = db.getSiblingDB(DB_NAME);
 
 print("\n==========================================");
-print("INICIANDO INDEXACIÓN INTELIGENTE EN: " + db.getName());
+print(`INICIANDO INDEXACIÓN INTELIGENTE`);
+print(`Base de datos: ${DB_NAME}`);
 print("==========================================\n");
 
+// ============================================================================
+// FUNCIONES AUXILIARES
+// ============================================================================
 /**
  * Verifica si ya existe un índice con las mismas llaves (keys),
  * independientemente del nombre que tenga.
- * * @param {string} collName - Nombre de la colección
- * @param {object} keyPattern - El objeto de definición del índice (ej: { "category.main": 1 })
+ * 
+ * @param {string} collName - Nombre de la colección.
+ * @param {object} keyPattern - El objeto de definición del índice (ej: { "category.main": 1 }).
  * @returns {string|null} - Retorna el nombre del índice existente si lo encuentra, o null.
  */
 function findExistingIndexName(collName, keyPattern) {

@@ -2,17 +2,29 @@
  * ============================================================================
  * GLOBALMARKET ANALYTICS - AGGREGATION PIPELINES
  * ============================================================================
- * @description
+ * @description Pipelines de agregación para análisis de datos de ventas,
+ *              productos, usuarios y tendencias del mercado.
  * @context     Proyecto 1: Ingeniería de Datos NoSQL
  * @author      Equipo GlobalMarket
  * ============================================================================
  */
 
-// Seleccionar base de datos
-db = db.getSiblingDB("globalmarket");
+// ============================================================================
+// CONFIGURACIÓN DE BASE DE DATOS
+// ============================================================================
+/**
+ * Obtiene el nombre de la base de datos desde la variable de entorno DB_NAME.
+ * Si no está definida, usa 'globalmarket' como valor por defecto.
+ * 
+ * Uso desde terminal:
+ *   mongosh "$CONNECTION_STRING/$DB_NAME" --file "scripts/queries.js"
+ */
+const DB_NAME = process.env.DB_NAME || db.getName() || "globalmarket";
+db = db.getSiblingDB(DB_NAME);
 
 print("==========================================\n");
-print("EJECUTANDO PIPELINES DE AGREGACIÓN");
+print(`EJECUTANDO PIPELINES DE AGREGACIÓN`);
+print(`Base de datos: ${DB_NAME}`);
 print("==========================================\n");
 
 // ============================================

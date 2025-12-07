@@ -3,23 +3,38 @@
  * GLOBALMARKET ANALYTICS - ESQUEMA DE VALIDACIÓN Y REGLAS DE INTEGRIDAD
  * ============================================================================
  * @description Define las reglas de validación JSON Schema para garantizar la
- * calidad de los datos en MongoDB Atlas.
+ *              calidad de los datos en MongoDB Atlas.
  * @context     Proyecto 1: Ingeniería de Datos NoSQL
  * @author      Equipo GlobalMarket
  * ============================================================================
  */
 
-// Seleccionar base de datos
-db = db.getSiblingDB("globalmarket");
-
+// ============================================================================
+// CONFIGURACIÓN DE BASE DE DATOS
+// ============================================================================
 /**
- * Función auxiliar para asegurar la existencia de la colección antes de modificarla.
+ * Obtiene el nombre de la base de datos desde la variable de entorno DB_NAME.
+ * Si no está definida, usa 'globalmarket' como valor por defecto.
+ * 
+ * Uso desde master_setup.sh:
+ *   mongosh "$CONNECTION_STRING/$DB_NAME" --file "scripts/validation.js"
+ */
+const DB_NAME = process.env.DB_NAME || db.getName() || "globalmarket";
+db = db.getSiblingDB(DB_NAME);
+print(`[INFO] Usando base de datos: '${DB_NAME}'`);
+
+// ============================================================================
+// FUNCIONES AUXILIARES
+// ============================================================================
+/**
+ * Asegura la existencia de una colección antes de modificarla.
  * Evita errores si se ejecuta el script en una base de datos limpia.
+ * @param {string} name - Nombre de la colección a verificar/crear.
  */
 function ensureCollection(name) {
   if (!db.getCollectionNames().includes(name)) {
     db.createCollection(name);
-    print(`[INFO] Colección '${name}' creada inicializada.`);
+    print(`[INFO] Colección '${name}' creada e inicializada.`);
   }
 }
 

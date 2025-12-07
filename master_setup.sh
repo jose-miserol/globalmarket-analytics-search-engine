@@ -34,7 +34,7 @@ fi
 # ═══════════════════════════════════════════════════════════════════════════════
 # �📋 CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
-DB_NAME="globalmarket"
+DB_NAME="globalmarketv2"
 DATA_DIR="data/processed"
 SCRIPTS_DIR="scripts"
 
@@ -104,7 +104,9 @@ check_prerequisites() {
     fi
     
     # Check data files exist
+    echo ""
     print_step "Checking data files..."
+    echo ""
     for collection in "${COLLECTIONS[@]}"; do
         if [[ -f "${DATA_DIR}/${collection}.json" ]]; then
             local size=$(du -h "${DATA_DIR}/${collection}.json" | cut -f1)
@@ -210,7 +212,7 @@ import_data() {
         fi
         
         print_step "Importing ${collection}..."
-        
+        echo ""
         local start_time=$(date +%s)
         
         if mongoimport \
@@ -223,13 +225,14 @@ import_data() {
             
             local end_time=$(date +%s)
             local duration=$((end_time - start_time))
+            echo ""
             print_success "${collection} imported successfully! (${duration}s)"
+            echo ""
         else
             print_error "Failed to import ${collection}"
             exit 1
         fi
     done
-    
     echo ""
     print_success "All collections imported successfully!"
 }
@@ -285,7 +288,7 @@ verify_import() {
             const count = db.getCollection(col).countDocuments();
             const padCol = col.padEnd(14);
             const padCount = count.toString().padStart(12);
-            console.log('│ ' + padCol + ' │' + padCount + ' │');
+            console.log('│ ' + padCol + ' │' + padCount + '  │');
         });
         console.log('└────────────────┴──────────────┘');
     "
@@ -303,10 +306,10 @@ main() {
     echo -e "${CYAN}"
     echo "  ╔═══════════════════════════════════════════════════════════════════╗"
     echo "  ║                                                                   ║"
-    echo "  ║   🚀 GlobalMarket Analytics - MongoDB Atlas Setup                 ║"
+    echo "  ║  GlobalMarket Analytics - MongoDB Atlas Setup                     ║"
     echo "  ║                                                                   ║"
-    echo "  ║   Universidad Nacional Experimental de Guayana (UNEG)            ║"
-    echo "  ║   Sistemas de Bases de Datos II • 2025-II                        ║"
+    echo "  ║  Universidad Nacional Experimental de Guayana (UNEG)              ║"
+    echo "  ║  Sistemas de Bases de Datos II • 2025-II                          ║"
     echo "  ║                                                                   ║"
     echo "  ╚═══════════════════════════════════════════════════════════════════╝"
     echo -e "${NC}"
@@ -388,15 +391,22 @@ main() {
     local end_time=$(date +%s)
     local total_duration=$((end_time - start_time))
     
+    echo ""
     print_header "🎉 Setup Complete!"
     
-    echo -e "${GREEN}  ┌─────────────────────────────────────────────────────────┐${NC}"
-    echo -e "${GREEN}  │                   📊 Summary                            │${NC}"
-    echo -e "${GREEN}  ├─────────────────────────────────────────────────────────┤${NC}"
-    echo -e "${GREEN}  │  ✅ Database:     ${DB_NAME}                           │${NC}"
-    echo -e "${GREEN}  │  ✅ Collections:  ${#COLLECTIONS[@]} imported                          │${NC}"
-    echo -e "${GREEN}  │  ⏱️  Duration:     ${total_duration} seconds                           │${NC}"
-    echo -e "${GREEN}  └─────────────────────────────────────────────────────────┘${NC}"
+    # Calculate padding for aligned box
+    local box_width=54
+    local db_value="${DB_NAME}"
+    local col_value="${#COLLECTIONS[@]} imported"
+    local dur_value="${total_duration} seconds"
+    
+    echo -e "${GREEN}  ┌──────────────────────────────────────────────────────┐${NC}"
+    echo -e "${GREEN}  │  Summary                                             │${NC}"
+    echo -e "${GREEN}  ├──────────────────────────────────────────────────────┤${NC}"
+    printf "${GREEN}  │  Database:     %-37s │${NC}\n" "$db_value"
+    printf "${GREEN}  │  Collections:  %-37s │${NC}\n" "$col_value"
+    printf "${GREEN}  │  Duration:     %-37s │${NC}\n" "$dur_value"
+    echo -e "${GREEN}  └──────────────────────────────────────────────────────┘${NC}"
     echo ""
     echo -e "${CYAN}Next steps:${NC}"
     echo -e "  1. Open MongoDB Atlas and verify the data"
