@@ -19,7 +19,20 @@ BOLD='\033[1m'
 NC='\033[0m' # No Color
 
 # ═══════════════════════════════════════════════════════════════════════════════
-# 📋 CONFIGURATION
+# � LOAD ENVIRONMENT VARIABLES
+# ═══════════════════════════════════════════════════════════════════════════════
+SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
+ENV_FILE="${SCRIPT_DIR}/.env"
+
+if [[ -f "$ENV_FILE" ]]; then
+    # Load .env file (skip comments and empty lines)
+    set -a
+    source <(grep -v '^#' "$ENV_FILE" | grep -v '^$' | sed 's/\r$//')
+    set +a
+fi
+
+# ═══════════════════════════════════════════════════════════════════════════════
+# �📋 CONFIGURATION
 # ═══════════════════════════════════════════════════════════════════════════════
 DB_NAME="globalmarket"
 DATA_DIR="data/processed"
@@ -118,12 +131,24 @@ check_prerequisites() {
 get_connection_string() {
     print_header "🔑 MongoDB Atlas Connection"
     
+    # Priority 1: Full URI from environment
     if [[ -n "$MONGODB_URI" ]]; then
         print_info "Using MONGODB_URI from environment variable"
         CONNECTION_STRING="$MONGODB_URI"
+    # Priority 2: Build URI from individual variables (from .env)
+    elif [[ -n "$MONGO_USER" && -n "$MONGO_PASSWORD" && -n "$MONGO_CLUSTER" ]]; then
+        print_info "Building connection string from .env credentials"
+        CONNECTION_STRING="mongodb+srv://${MONGO_USER}:${MONGO_PASSWORD}@${MONGO_CLUSTER}"
+        print_success "Connection string built successfully!"
+    # Priority 3: Ask user for input
     else
         echo -e "${YELLOW}Enter your MongoDB Atlas connection string:${NC}"
         echo -e "${CYAN}Format: mongodb+srv://username:password@cluster.mongodb.net${NC}"
+        echo ""
+        echo -e "${CYAN}Or configure your .env file with:${NC}"
+        echo -e "  MONGO_USER=\"your_username\""
+        echo -e "  MONGO_PASSWORD=\"your_password\""
+        echo -e "  MONGO_CLUSTER=\"your_cluster.mongodb.net\""
         echo ""
         read -p "Connection String: " CONNECTION_STRING
         
