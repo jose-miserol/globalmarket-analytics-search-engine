@@ -41,10 +41,16 @@
   - [🏗️ Arquitectura de Datos](#️-arquitectura-de-datos)
     - [Modelo de Datos Relacional (Diagrama Entidad-Relación - ERD)](#modelo-de-datos-relacional-diagrama-entidad-relación---erd)
     - [Modelo de Datos NoSQL (MongoDB/JSON Schema)](#modelo-de-datos-nosql-mongodbjson-schema)
-    - [🔄 Paso 2: Transformación de Datos (ETL)](#-paso-2-transformación-de-datos-etl)
-    - [🛡️ Paso 3: Aplicar Validaciones (Schema Validation)](#️-paso-3-aplicar-validaciones-schema-validation)
-    - [📥 Paso 4: Ingesta de Datos](#-paso-4-ingesta-de-datos)
-    - [⚡ Paso 5: Indexación Inteligente](#-paso-5-indexación-inteligente)
+    - [⚡ Despliegue Rápido con master_setup.sh \[BETA\]](#-despliegue-rápido-con-master_setupsh-beta)
+      - [Requisitos previos](#requisitos-previos)
+      - [Paso 1: Configurar credenciales](#paso-1-configurar-credenciales)
+      - [Paso 2: Ejecutar el script](#paso-2-ejecutar-el-script)
+      - [Opciones disponibles](#opciones-disponibles)
+    - [📝 Despliegue Manual (Paso a Paso)](#-despliegue-manual-paso-a-paso)
+    - [🔄 Paso 1: Transformación de Datos (ETL)](#-paso-1-transformación-de-datos-etl)
+    - [🛡️ Paso 2: Aplicar Validaciones (Schema Validation)](#️-paso-2-aplicar-validaciones-schema-validation)
+    - [📥 Paso 3: Ingesta de Datos](#-paso-3-ingesta-de-datos)
+    - [⚡ Paso 4: Indexación Inteligente](#-paso-4-indexación-inteligente)
   - [📊 Analytics y Consultas](#-analytics-y-consultas)
     - [🔎 Pipelines Implementados](#-pipelines-implementados)
   - [📁 Estructura del Proyecto](#-estructura-del-proyecto)
@@ -237,7 +243,78 @@ erDiagram
 
 <br/>
 
-### 🔄 Paso 2: Transformación de Datos (ETL)
+### ⚡ Despliegue Rápido con master_setup.sh [BETA]
+
+La forma más rápida de desplegar todo el proyecto es usando el script automatizado `master_setup.sh`.
+
+#### Requisitos previos
+
+- **Git Bash** o terminal compatible con Bash
+- Cuenta en **MongoDB Atlas** con un cluster configurado
+- **MongoDB Database Tools** instalado (`mongoimport`)
+- **mongosh** instalado
+
+#### Paso 1: Configurar credenciales
+
+Edita el archivo `.env` en la raíz del proyecto con tus credenciales de MongoDB Atlas:
+
+```bash
+# MongoDB Atlas Credentials
+MONGO_USER="tu_usuario"
+MONGO_PASSWORD="tu_contraseña"
+MONGO_CLUSTER="cluster0.xxxxx.mongodb.net"
+
+# Database name (opcional, por defecto "globalmarket")
+DB_NAME="globalmarket"
+```
+
+> [!TIP]
+> Para obtener el nombre del cluster, ve a MongoDB Atlas → Connect → Shell y copia el hostname.
+
+#### Paso 2: Ejecutar el script
+
+Desde **Git Bash**, ejecuta:
+
+```bash
+./master_setup.sh
+```
+
+El script realizará automáticamente:
+
+1. ✅ Verificación de herramientas (mongoimport, mongosh, Python)
+2. ✅ Conexión a MongoDB Atlas usando las credenciales del `.env`
+3. ✅ Importación de datos JSON (products, users, sales, reviews)
+4. ✅ Aplicación de validaciones JSON Schema
+5. ✅ Creación de índices optimizados
+6. ✅ Verificación de la importación
+
+#### Opciones disponibles
+
+```bash
+./master_setup.sh --help
+```
+
+| Opción              | Descripción                               |
+| :------------------ | :---------------------------------------- |
+| `--uri <string>`    | Especificar connection string manualmente |
+| `--skip-validation` | Omitir validación de esquema              |
+| `--skip-indexes`    | Omitir creación de índices                |
+| `--skip-verify`     | Omitir verificación final                 |
+
+> [!IMPORTANT]
+> El archivo `.env` contiene credenciales sensibles y está incluido en `.gitignore`. **Nunca subas este archivo a repositorios públicos.**
+
+<br/>
+
+---
+
+### 📝 Despliegue Manual (Paso a Paso)
+
+Si prefieres ejecutar cada paso manualmente, sigue las instrucciones a continuación.
+
+<br/>
+
+### 🔄 Paso 1: Transformación de Datos (ETL)
 
 Prepara el dataset crudo (CSV) y conviértelo a documentos JSON estructurados.
 
@@ -245,13 +322,15 @@ Prepara el dataset crudo (CSV) y conviértelo a documentos JSON estructurados.
 python src/data/transform_data.py
 ```
 
-> [!TIP] > **Resultado:** Se generarán 4 archivos JSON en `data/processed/` listos para importar.
+> [!TIP]
+> **Resultado:** Se generarán 4 archivos JSON en `data/processed/` listos para importar.
 
 ```bash
 python src/data/transform_validate_data.py
 ```
 
-> [!TIP] > **Resultado:** Se validan los datos JSON en `data/processed/`.
+> [!TIP]
+> **Resultado:** Se validan los datos JSON en `data/processed/`.
 
 <br/>
 
@@ -260,7 +339,7 @@ python src/data/transform_validate_data.py
 
 <br/>
 
-### 🛡️ Paso 3: Aplicar Validaciones (Schema Validation)
+### 🛡️ Paso 2: Aplicar Validaciones (Schema Validation)
 
 <br/>
 
@@ -279,7 +358,7 @@ load("validation.js")
 > - ✅ `email` con formato regex válido
 > - ✅ `rating` entre 0 y 5
 
-### 📥 Paso 4: Ingesta de Datos
+### 📥 Paso 3: Ingesta de Datos
 
 ```bash
 # Reemplazar TU_STRING con tu connection string de Atlas
@@ -291,7 +370,7 @@ mongoimport --uri "TU_STRING" --db globalmarket --collection reviews --file data
 
 <br/>
 
-### ⚡ Paso 5: Indexación Inteligente
+### ⚡ Paso 4: Indexación Inteligente
 
 <br/>
 
