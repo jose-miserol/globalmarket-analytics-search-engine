@@ -541,9 +541,9 @@ Este proyecto fue desarrollado para la asignatura **Sistemas de Bases de Datos I
 
 | 🎭 Rol                    | 📋 Responsabilidad                                 | 👤 Integrante             |
 | :------------------------ | :------------------------------------------------- | :------------------------ |
-| **🏗️ Data Architect**     | Modelado de esquemas, ETL y diseño de colecciones  | [Nombre del Integrante 1] |
-| **🔐 Security Engineer**  | Implementación de validaciones JSON Schema y tests | [Nombre del Integrante 2] |
-| **📊 Analytics Engineer** | Desarrollo de Pipelines y optimización de índices  | [Nombre del Integrante 3] |
+| **🏗️ Data Architect**     | Modelado de esquemas, ETL y diseño de colecciones  | Jose Miserol   |
+| **🔐 Security Engineer**  | Implementación de validaciones JSON Schema y tests | Miguel Gomez   |
+| **📊 Analytics Engineer** | Desarrollo de Pipelines y optimización de índices  | Anthony Medina |
 
 </div>
 
